@@ -1,0 +1,35 @@
+kind: BuildConfig
+apiVersion: build.openshift.io/v1
+metadata:
+  name: postgresql-test
+  namespace: test
+spec:
+  nodeSelector: null
+  output:
+    to:
+      kind: ImageStreamTag
+      name: 'postgresql-test:latest'
+  strategy:
+    type: Docker
+    dockerStrategy:
+      from:
+        kind: ImageStreamTag
+        namespace: openshift
+        name: 'postgresql:12-el8'
+      volumes:
+        - name: etc-pki-entitlement
+          source:
+            type: Secret
+            secret:
+              secretName: etc-pki-entitlement
+              defaultMode: 420
+          mounts:
+            - destinationPath: /etc/pki/entitlement
+  postCommit: {}
+  source:
+    type: Git
+    git:
+      uri: 'http://git.aa.tiida.dcm.rls-docomo.com/awsc/postgresql.git'
+      ref: master
+    contextDir: /
+  runPolicy: Serial
