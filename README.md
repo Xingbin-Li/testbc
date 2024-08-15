@@ -1,0 +1,2 @@
+# testbc
+test for buildconfig
